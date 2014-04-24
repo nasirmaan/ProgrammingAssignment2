@@ -1,15 +1,55 @@
-## Put comments here that give an overall description of what your
-## functions do
+## this program computes inverse of a square matrix. It
+## consists of data structure makeCacheMatrix and
+## cacheSolve function. The objective is to save computation
+## by caching inverse matrix on first call to invert a matrix and use
+## it in the following calls to calculate inverse of same matrix.
 
-## Write a short comment describing this function
 
+
+## makeCacheMatrix is data structure which holds
+## a matrix (x) and its cache inverse (m). On matrix
+## change in set() function, cache is cleared by 
+## resetting m to NULL.
 makeCacheMatrix <- function(x = matrix()) {
 
+  m <- NULL
+  
+  set <- function(y) {
+    x <<- y
+    m <<- NULL
+  }
+  
+  get <- function() x
+  
+  setSolve <- function(inv) m <<- inv
+  
+  getSolve <- function() m
+  
+  list(set = set, get = get,
+       setSolve = setSolve,
+       getSolve = getSolve)
+  
 }
 
 
-## Write a short comment describing this function
-
+## cacheSolve accepts makeCacheMatrix as its
+## parameter and returns an inverse matrix.
+## It only computes inverse matrix if it does
+## not exist in cache.
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+
+  m <- x$getSolve()
+  if(!is.null(m)) {
+    message("getting cached data")
+    return(m)
+  }
+  data <- x$get()
+  if (nrow(data) == ncol(data)) {
+    m <- solve(data, ...)
+    x$setSolve(m)
+    m
+  } else {
+    message("Error: provide matrix is not a square matrix!!!")
+  }
+
 }
